@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <script type="text/javascript" src="jquery-latest.js"></script>
+
+<script type="text/javascript"> 
+$(document).ready(function() {
+	// generate markup
+	var ratingMarkup = ["Please rate: "];
+	for(var i=1; i <= 5; i++) {
+		ratingMarkup[ratingMarkup.length] = "<a href='#'>" + i + "</a> ";
+	}
+	var container = $("#rating");
+	// add markup to container
+	container.html(ratingMarkup.join(''));
+	
+	// add click handlers
+	container.find("a").click(function(e) {
+		e.preventDefault();
+		// send requests
+		$.post("/process_vote", {rating: $(this).html()}, function(xml) {
+			// format result
+			var result = [
+				"Thanks for rating, current average: ",
+				$("average", xml).text(),
+				", number of votes: ",
+				$("count", xml).text()
+			];
+			// output result
+			$("#rating").html(result.join(''));
+		} );
+	});
+});
+</script> 
+  </head>
+  <body>
+     <div id="rating">Container</div> 
+  </body>
+</html>
